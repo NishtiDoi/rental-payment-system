@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship # <--- Add this import
 from app.database import Base
 import uuid
 from datetime import datetime
@@ -19,4 +20,5 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relationships defined later
+    # Relationships - These must match the 'back_populates' names in your other files
+    bank_accounts = relationship("BankAccount", back_populates="user")
