@@ -22,3 +22,5 @@ class User(Base):
     
     # Relationships - These must match the 'back_populates' names in your other files
     bank_accounts = relationship("BankAccount", back_populates="user")
+    properties = relationship("Property", back_populates="landlord")
+    leases_as_renter = relationship("Lease", back_populates="renter")

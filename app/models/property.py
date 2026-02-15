@@ -22,3 +22,4 @@ class Property(Base):
     
     # Relationships
     landlord = relationship("User", back_populates="properties")
+    leases = relationship("Lease", back_populates="property")

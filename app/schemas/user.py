@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, UUID4
+from pydantic import BaseModel, EmailStr, UUID4, ConfigDict
 from datetime import datetime
 from app.models.user import UserRole #UserRole enumerable value hai
 
@@ -14,5 +14,4 @@ class UserResponse(UserBase): # what the api sends back to user after signuing u
     id: UUID4 # UserBase+ id+ created at  
     created_at: datetime
     
-    class Config: # tells pydantic how to read data from database 
-        from_attributes = True #Setting from_attributes = True tells Pydantic: "It's okay if the data isn't a dictionary. If you see an Object, just read the attributes (dot notation) automatically."
+    model_config = ConfigDict(from_attributes=True) #Setting from_attributes = True tells Pydantic: "It's okay if the data isn't a dictionary. If you see an Object, just read the attributes (dot notation) automatically."

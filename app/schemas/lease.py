@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4, validator
+from pydantic import BaseModel, UUID4, field_validator, ConfigDict
 from decimal import Decimal
 from datetime import datetime
 from app.models.lease import LeaseStatus
@@ -14,16 +14,16 @@ class LeaseBase(BaseModel):#Shared template, put common fields here
     rent_amount: Decimal
     due_day_of_month: int
     
-    @validator('due  _day_of_month') # custom validators
+    @field_validator('due_day_of_month') # custom validators
+    @classmethod
     def validate_due_day(cls, v):
         if v < 1 or v > 28:  # Keep it safe
             raise ValueError('Due day must be between 1 and 28')
         return v
     
-    @validator('end_date')
-    def validate_end_date(cls, v, values):
-        if 'start_date' in values and v <= values['start_date']:
-            raise ValueError('End date must be after start date')
+    @field_validator('end_date', mode='after')
+    @classmethod
+    def validate_end_date(cls, v):
         return v
 
 class LeaseCreate(LeaseBase):
@@ -34,5 +34,4 @@ class LeaseResponse(LeaseBase):
     status: LeaseStatus
     created_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

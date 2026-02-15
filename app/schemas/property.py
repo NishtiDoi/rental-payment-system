@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, ConfigDict
 from decimal import Decimal
 from datetime import datetime
 
@@ -17,11 +17,8 @@ class PropertyResponse(PropertyBase): # schema for outgoing response
     landlord_id: UUID4
     created_at: datetime
     
-    class Config:
-        from_attributes = True #Allow this Pydantic model to read data directly from object attributes.
+    model_config = ConfigDict(from_attributes=True) #Allow this Pydantic model to read data directly from object attributes.
 
-
-
-        #normally pydantic expcts a dictionary 
-        # but when you fetch from database using sqlalchemy, you dont get a dictionary
-        # you get an object
+    #normally pydantic expcts a dictionary 
+    # but when you fetch from database using sqlalchemy, you dont get a dictionary
+    # you get an object

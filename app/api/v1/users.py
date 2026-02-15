@@ -7,8 +7,8 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 
 # Create a dedicated router for all user-related endpoints
-# All routes will be prefixed with /users and grouped under "users" tag in docs
-router = APIRouter(prefix="/users", tags=["users"])
+# Prefix is handled in main.py - don't add prefix here
+router = APIRouter(tags=["users"])
 
 
 @router.post("/", response_model=UserResponse, status_code=201)
@@ -29,8 +29,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()         # Execute the INSERT
     db.refresh(db_user) # Load any DB-generated values (e.g. id, created_at)
 
-# So before commit() → object exists only in memory
-# After commit() → object also exists as a real row in the database
+    # So before commit() → object exists only in memory
+    # After commit() → object also exists as a real row in the database
     return db_user
 
 

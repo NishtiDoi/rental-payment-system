@@ -5,27 +5,33 @@ from app.database import get_db
 from app.models.lease import Lease
 from app.models.payment_schedule import PaymentSchedule
 from app.schemas.lease import LeaseCreate, LeaseResponse
+from app.models.property import Property
+from app.models.user import User
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-router = APIRouter(prefix="/leases", tags=["leases"])
+router = APIRouter()  # no prefix here, main.py handles it
 
 @router.post("/", response_model=LeaseResponse, status_code=201)
 def create_lease(lease: LeaseCreate, db: Session = Depends(get_db)):
-    # Verify property and renter exist
-    # (add validation logic here)
+    # Validate property exists
+    property_obj = db.query(Property).filter(Property.id == lease.property_id).first()
+    if not property_obj:
+        raise HTTPException(status_code=404, detail="Property not found")
     
+    # Validate renter exists
+    renter_obj = db.query(User).filter(User.id == lease.renter_id, User.role == "renter").first()
+    if not renter_obj:
+        raise HTTPException(status_code=404, detail="Renter not found")
+    
+    # Create lease
     db_lease = Lease(**lease.model_dump())
     db.add(db_lease)
     db.commit()
     db.refresh(db_lease)
     
     # Create payment schedule
-    first_payment_date = calculate_first_payment_date(
-        lease.start_date, 
-        lease.due_day_of_month
-    )
-    
+    first_payment_date = calculate_first_payment_date(lease.start_date, lease.due_day_of_month)
     payment_schedule = PaymentSchedule(
         lease_id=db_lease.id,
         next_due_date=first_payment_date,
@@ -37,12 +43,9 @@ def create_lease(lease: LeaseCreate, db: Session = Depends(get_db)):
     return db_lease
 
 def calculate_first_payment_date(start_date: datetime, due_day: int) -> datetime:
-    """Calculate first payment due date based on lease start and due day"""
     if start_date.day <= due_day:
-        # First payment this month
         return start_date.replace(day=due_day)
     else:
-        # First payment next month
         next_month = start_date + relativedelta(months=1)
         return next_month.replace(day=due_day)
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, ConfigDict
 from datetime import datetime
 
 class BankAccountBase(BaseModel): # Common fields shared between create and response schemas
@@ -16,5 +16,4 @@ class BankAccountResponse(BankAccountBase):  # Output schema returned by the API
     is_primary: bool
     created_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

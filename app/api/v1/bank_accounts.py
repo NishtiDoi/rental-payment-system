@@ -5,7 +5,7 @@ from app.database import get_db
 from app.models.bank_account import BankAccount
 from app.schemas.bank_account import BankAccountCreate, BankAccountResponse
 
-router = APIRouter(prefix="/bank-accounts", tags=["bank_accounts"])
+router = APIRouter(tags=["bank_accounts"])
 
 @router.post("/", response_model=BankAccountResponse, status_code=201)
 def create_bank_account(account: BankAccountCreate, db: Session = Depends(get_db)):

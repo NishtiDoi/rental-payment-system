@@ -7,9 +7,9 @@ from app.models.user import User, UserRole
 from app.schemas.property import PropertyCreate, PropertyResponse
 
 #APIRouter for manaing the properties, code acts as validation and persistence layer
-router = APIRouter(prefix="/properties", tags=["properties"])
-#Creates a group of related endpoints. Every route here will 
-#automatically start with /properties and be grouped under "properties" in your Swagger documentation.
+router = APIRouter(tags=["properties"])
+#Prefix is handled in main.py - don't add prefix here
+#Creates a group of related endpoints. Every route will be grouped under "properties" in your Swagger documentation.
 
 #Even though your database object (SQLAlchemy) might contain "messy" or "secret" internal data, the response_model (Pydantic) ensures the outside world only sees exactly what you want them to see.
 @router.post("/", response_model=PropertyResponse, status_code=201)
