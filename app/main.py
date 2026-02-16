@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import engine, Base
-from app.api.v1 import users, bank_accounts, properties, leases
+from app.api.v1 import users, bank_accounts, properties, leases, payments
 from app import models
 
 # Create tables
@@ -17,6 +17,7 @@ app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(bank_accounts.router, prefix="/api/v1/bank-accounts", tags=["Bank Accounts"])
 app.include_router(properties.router, prefix="/api/v1/properties", tags=["Properties"])
 app.include_router(leases.router, prefix="/api/v1/leases", tags=["Leases"])
+app.include_router(payments.router, prefix="/api/v1/payments", tags=["Payments"])
 
 @app.get("/")
 def root():

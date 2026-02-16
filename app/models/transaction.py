@@ -54,6 +54,8 @@ class Transaction(Base):
     
     # Relationships
     lease = relationship("Lease", back_populates="transactions")
+    events = relationship("TransactionEvent", back_populates="transaction")
+
     payer_account = relationship("BankAccount", foreign_keys=[payer_account_id])
     payee_account = relationship("BankAccount", foreign_keys=[payee_account_id])
     
