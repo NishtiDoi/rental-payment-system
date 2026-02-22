@@ -13,11 +13,13 @@ class TransactionStatus(str, enum.Enum):
     FAILED = "failed"
     REFUNDED = "refunded"
 
-class PaymentRailType(str, enum.Enum):
-    INSTANT = "instant"  # Like RTP/FedNow
-    SAME_DAY_ACH = "same_day_ach"
-    STANDARD_ACH = "standard_ach"
-    WIRE = "wire"
+class PaymentRailType(str, enum.Enum): # payment rails refer to the infrastruture that moves money between banks
+    INSTANT = "instant"  # Like RTP(Real TIME payment network)/FedNow US FED Reserve's instant payment service  
+    #URGRENT RENT PAYMENTS
+    SAME_DAY_ACH = "same_day_ach" # automated clearing house
+    STANDARD_ACH = "standard_ach" # 1-3 business day, very cheap, most common, can be reversed
+    #FOR REGULAR RENT PAYMENTS
+    WIRE = "wire" # same day, expensive, final (no reversals), good for large amounts
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -59,8 +61,11 @@ class Transaction(Base):
     payer_account = relationship("BankAccount", foreign_keys=[payer_account_id])
     payee_account = relationship("BankAccount", foreign_keys=[payee_account_id])
     
-    # Indexes for performance
+    # Indexes makes look ups faster, especially for common queries like "find all transactions for this lease"
     __table_args__ = (
         Index('idx_transaction_status_created', 'status', 'created_at'),
         Index('idx_transaction_lease', 'lease_id', 'created_at'),
     )
+    #What is __table_args__?
+#__table_args__ is where you define extra table-level configuration.
+#“Stuff that applies to the whole table.”

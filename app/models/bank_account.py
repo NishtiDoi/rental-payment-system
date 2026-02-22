@@ -13,7 +13,7 @@ class BankAccount(Base):
     
     # DON'T store real account numbers - use tokenization simulation
     account_number_token = Column(String, nullable=False)  # Last 4 digits only
-    routing_number = Column(String, nullable=False)
+    routing_number = Column(String, nullable=False) #A routing number is a 9-digit code used in the United States to identify a specific bank or financial institution during a transaction.
     bank_name = Column(String, nullable=False)
     
     is_verified = Column(Boolean, default=False)

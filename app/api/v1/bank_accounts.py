@@ -21,6 +21,7 @@ def list_user_accounts(user_id: str, db: Session = Depends(get_db)):
     accounts = db.query(BankAccount).filter(BankAccount.user_id == user_id).all()
     return accounts
 
+# Modify existing resource partially
 @router.patch("/{account_id}/set-primary", response_model=BankAccountResponse)
 def set_primary_account(account_id: str, db: Session = Depends(get_db)):
     account = db.query(BankAccount).filter(BankAccount.id == account_id).first()

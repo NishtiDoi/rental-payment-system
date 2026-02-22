@@ -3,6 +3,17 @@ from datetime import datetime
 from app.models.user import UserRole #UserRole enumerable value hai
 
 class UserBase(BaseModel): #shared schema guarenteeing user related schema reuse these feilds else error 422
+    """
+    Your SQLAlchemy models define:
+        How data is stored in database.
+
+    Your Pydantic models define:
+        What the API accepts.
+        What the API returns.
+        What is allowed.
+        What is validated.
+        Database model ≠ API model.
+    """
     email: EmailStr
     full_name: str 
     role: UserRole

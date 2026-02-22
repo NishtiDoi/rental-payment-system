@@ -4,7 +4,7 @@ from app.api.v1 import users, bank_accounts, properties, leases, payments
 from app import models
 
 # Create tables
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine) # tells sqlalchemy to look at all models that inherit from Base, create corresponding tables in db
 
 app = FastAPI(
     title="DirectPay Rental Platform",

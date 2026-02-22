@@ -6,11 +6,10 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 
-# Create a dedicated router for all user-related endpoints
-# Prefix is handled in main.py - don't add prefix here
+# Creates a group of endpoints related to users.
 router = APIRouter(tags=["users"])
 
-
+# below line registers function as an HTTP endpoint, without it create_user is just a normal function that can be called from other code but not from outside world via HTTP request. By adding @router.post("/") we tell FastAPI: "Hey, when someone sends a POST request to /users/, call this function and pass the request body as the user parameter, and also give me a database session to work with."
 @router.post("/", response_model=UserResponse, status_code=201)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
@@ -18,12 +17,16 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     Checks for email uniqueness before creating the record.
     """
     # Check if email is already registered
+    # User is sqlalchemy model, representing db table
+    # db.query(User) means to query the users table
+    # user is the request level response that comes as a json payload and is validated by pydantic schema UserCreate, it has email, full_name and role as its attributes. So we are checking if any existing user in the database has the same email as the one we are trying to create.
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Create new user instance from validated request data
-    db_user = User(**user.model_dump()) # The expression User(**user.model_dump()) takes the validated data from the incoming HTTP request (held in a Pydantic UserCreate object), converts it to a dictionary, and passes every key-value pair as a named argument to the SQLAlchemy User model constructor — creating a new database entity in the most concise and maintainable way.
+    db_user = User(**user.model_dump()) 
+    # The expression User(**user.model_dump()) takes the validated data from the incoming HTTP request (held in a Pydantic UserCreate object), converts it to a dictionary, and passes every key-value pair as a named argument to the SQLAlchemy User model constructor — creating a new database entity in the most concise and maintainable way.
 
     db.add(db_user)     # Stage the new user for insertion
     db.commit()         # Execute the INSERT

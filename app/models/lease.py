@@ -32,9 +32,9 @@ class Lease(Base):
     # Relationships
     property = relationship("Property", back_populates="leases")
     renter = relationship("User", back_populates="leases_as_renter")
-    payment_schedule = relationship(
+    payment_schedule = relationship( #back_populates keeps both sides of the relationship synchronized automatically.
         "PaymentSchedule",
         back_populates="lease",
-        uselist=False
+        uselist=False # One-to-one relationship
     )
     transactions = relationship("Transaction", back_populates="lease")
